@@ -1,6 +1,6 @@
-# raycaster
+# raytracer
 
-A raycaster from scratch built in C 
+A raytracer from scratch built in C 
 
 ---
 
@@ -10,12 +10,12 @@ A raycaster from scratch built in C
 
 ## Setup Guide
 
-To install raycaster on your system, follow these steps:
+To install raytracer on your system, follow these steps:
 
 ### Use installation script
 
 ```bash
-wget https://raw.githubusercontent.com/ShadowNetter-Official/raycaster/main/install.sh && sh install.sh
+wget https://raw.githubusercontent.com/ShadowNetter-Official/raytracer/main/install.sh && sh install.sh
 ```
 
 ### Or build and install manually
@@ -23,30 +23,30 @@ wget https://raw.githubusercontent.com/ShadowNetter-Official/raycaster/main/inst
 ### 1. Clone This Repo
 
 ```bash
-git clone https://github.com/ShadowNetter-Official/raycaster
-cd raycaster
+git clone https://github.com/ShadowNetter-Official/raytracer
+cd raytracer
 ```
 ### 2. Build
 
 ```bash
 cd src
-gcc -o raycaster main.c cs50.c -lcrypt -lm
+gcc -o raytracer main.c cs50.c -lcrypt -lm
 ```
 
 ### 3. Install
 
 ```bash
-sudo cp raycaster /bin/
+sudo cp raytracer /bin/
 ```
 
 ---
 
 ## Removing
 
-You can remove raycaster with:
+You can remove raytracer with:
 
 ```bash
-sudo rm /bin/raycaster
+sudo rm /bin/raytracer
 ```
 
 ---
