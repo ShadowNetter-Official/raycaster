@@ -21,18 +21,20 @@ typedef struct
 	int fov;
 	double x;
 	double y;
-	double angle; 
+	double angle;
 }
 Player;
 
 typedef struct
 {
 	int fps;
+	int fov;
 	double apr;
 	int width;
 	int height;
 	int gwidth;
 	int gheight;
+	int rgb[3];
 }
 Config;
 
@@ -40,7 +42,7 @@ void draw_player(int height, int width, int delay, Player player, int grid[heigh
 void draw(int height, int width, int grid[height][width], int px, int py, double angle);
 void clean(int height, int width, int space[height][width]);
 double fac(double n);
-void raycaster(SDL_Renderer* renderer, Player player, double apr, int width, int height, int space[height][width], int swidth, int sheight);
+void raycaster(SDL_Renderer* renderer, Player player, double apr, int width, int height, int space[height][width], int swidth, int sheight, int base_color[3]);
 Config input();
 
 
@@ -49,7 +51,7 @@ int main(void)
 	Config cfg = input();
 
 	Player player;
-	player.fov = 30;
+	player.fov = cfg.fov;
 	player.x = cfg.gwidth / 2;
 	player.y = cfg.gheight - 2;
 	player.angle = 0;
@@ -109,7 +111,7 @@ int main(void)
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 		
-		raycaster(renderer, player, cfg.apr, cfg.gwidth, cfg.gheight, space, cfg.width, cfg.height);
+		raycaster(renderer, player, cfg.apr, cfg.gwidth, cfg.gheight, space, cfg.width, cfg.height, cfg.rgb);
 		
 		SDL_RenderPresent(renderer);
 		SDL_Delay(delay);
@@ -125,16 +127,21 @@ Config input()
 {
 	Config cfg;
 	cfg.fps = get_int("FPS: ");
+	cfg.fov = get_int("FOV: ");
 	cfg.apr = get_double("Angle per ray: ");
 	cfg.height = get_int("Screen height: ");
 	cfg.width = get_int("Screen width: ");
 	cfg.gheight = get_int("Game height: ");
 	cfg.gwidth = get_int("Game width: ");
+	for (int i = 0; i < 3; i++)
+	{
+		cfg.rgb[i] = get_int("Color %i or RGB: ", i);
+	}
 	return cfg;
 }
 
 void raycaster
-(SDL_Renderer* renderer, Player player, double apr, int width, int height, int space[height][width], int swidth, int sheight)
+(SDL_Renderer* renderer, Player player, double apr, int width, int height, int space[height][width], int swidth, int sheight, int base_color[3])
 {
 	// CALCULATIONS
 
@@ -172,14 +179,14 @@ void raycaster
 		}
 		
 		// line
-		lines[ray].rgb[0] = 255;
-		lines[ray].rgb[1] = 255;
-		lines[ray].rgb[2] = 255;
+		double brightness = 1.0 / (1.0 + steps * colour_scalar);
+
 		for (int i = 0; i < 3; i++)
 		{
-			double brightness = 255.0 / (1.0 + steps * colour_scalar);
-			lines[ray].rgb[i] = (int)brightness;
+			double value = base_color[i] * brightness;
+			lines[ray].rgb[i] = (int)value;
 			if (lines[ray].rgb[i] < 0) { lines[ray].rgb[i] = 0; }
+			if (lines[ray].rgb[i] > 255) { lines[ray].rgb[i] = 255; }
 		}
 
 		lines[ray].height = sheight - (steps * scalar);
